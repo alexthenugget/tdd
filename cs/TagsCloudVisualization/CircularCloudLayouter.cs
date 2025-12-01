@@ -5,7 +5,12 @@ namespace TagsCloudVisualization;
 public class CircularCloudLayouter
 {
     private readonly Point center;
-    private readonly List<Rectangle> rectangles;
+    private readonly List<Rectangle> rectangles; 
+    public IReadOnlyList<Rectangle> Rectangles => rectangles;
+    
+    private double angle;
+    private const double SpiralStep = 0.5;
+    private const double AngleStep = 0.1;
     
     public CircularCloudLayouter(Point center)
     {
@@ -32,18 +37,15 @@ public class CircularCloudLayouter
 
     private IEnumerable<Point> GetSpiralPoints()
     {
-        double angle = 0;
-        const double spiralStep = 0.5;
-        const double angleStep = 0.1;
         while (true)
         {
-            var radius = spiralStep * angle;
+            var radius = SpiralStep * angle;
             var x = center.X + (int)(radius * Math.Cos(angle));
             var y = center.Y + (int)(radius * Math.Sin(angle));
             
             yield return new Point(x, y);
             
-            angle += angleStep;
+            angle += AngleStep;
         }
     }
 
@@ -89,10 +91,13 @@ public class CircularCloudLayouter
     
     private bool IsIntersecting(Rectangle rectangle)
     {
-        return rectangles.Any(r => r.IntersectsWith(rectangle));
+        foreach (var r in rectangles)
+            if (r.IntersectsWith(rectangle)) 
+                return true;
+        return false;
     }
     
-    private Point GetRectangleCenter(Rectangle rect)
+    private static Point GetRectangleCenter(Rectangle rect)
     {
         return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
     }

@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsCloudVisualization", "TagsCloudVisualization\TagsCloudVisualization.csproj", "{7F24200F-FC6A-46FD-BBF1-9D35413A8B4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsCloudVisualization.Tests", "TagsCloudVisualization.Tests\TagsCloudVisualization.Tests.csproj", "{45A0ADE7-BE7B-447A-B86B-3986E5C28AE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsCloudVisualization.UI", "TagsCloudVisualization.UI\TagsCloudVisualization.UI.csproj", "{090098DA-EE1D-45AE-86AB-95D2C2B460B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{7F24200F-FC6A-46FD-BBF1-9D35413A8B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F24200F-FC6A-46FD-BBF1-9D35413A8B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F24200F-FC6A-46FD-BBF1-9D35413A8B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45A0ADE7-BE7B-447A-B86B-3986E5C28AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45A0ADE7-BE7B-447A-B86B-3986E5C28AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45A0ADE7-BE7B-447A-B86B-3986E5C28AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45A0ADE7-BE7B-447A-B86B-3986E5C28AE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{090098DA-EE1D-45AE-86AB-95D2C2B460B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{090098DA-EE1D-45AE-86AB-95D2C2B460B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{090098DA-EE1D-45AE-86AB-95D2C2B460B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{090098DA-EE1D-45AE-86AB-95D2C2B460B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

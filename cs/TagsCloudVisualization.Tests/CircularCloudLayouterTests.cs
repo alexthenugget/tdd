@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using NUnit.Framework;
 using FluentAssertions;
+using NUnit.Framework.Interfaces;
+using TagCloudDrawer;
 
 namespace TagsCloudVisualization.Tests;
 
@@ -17,6 +19,27 @@ public class CircularCloudLayouterTests
         center = new Point(2, 2);
         layouter = new CircularCloudLayouter(center);
         defaultSize = new Size(6, 4);
+    }
+    
+    [TearDown]
+    public void TearDown()
+    {
+        if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+        {
+            var testName = TestContext.CurrentContext.Test.Name;
+            var projectPath = TestContext.CurrentContext.TestDirectory;
+            var filename = Path.Combine(projectPath, $"{testName}_Failed.png");
+
+            var visualizer = new TagsCloudDrawer(
+                backgroundColor: Color.White, 
+                fillingColor: Color.Red,
+                outlineColor: Color.DarkRed
+            );
+
+            visualizer.Draw(layouter.Rectangles.ToList(), filename);
+            
+            TestContext.Out.WriteLine($"Tag cloud visualization saved to file {filename}");
+        }
     }
     
     [Test]
@@ -43,28 +66,28 @@ public class CircularCloudLayouterTests
     [Test]
     public void PutNextRectangle_MultipleRectangles_ShouldNotIntersectOtherRectangles()
     {
-        var rectangles = new List<Rectangle>();
-        
         for (int i = 0; i < 50; i++)
         {
             var rectangle = layouter.PutNextRectangle(defaultSize);
-            rectangles.Should().NotContain(r => r.IntersectsWith(rectangle));
-            rectangles.Add(rectangle);
+            
+            layouter.Rectangles.Should().NotContain(r => r != rectangle && r.IntersectsWith(rectangle));
         }
     }
     
     [Test]
     public void PutNextRectangle_RectanglesWithDifferentSizes_ShouldNotIntersectOtherRectangles()
     {
-        var random = new Random();
-        var rectangles = layouter.GenerateRectangles(50, () => 
-            new Size(random.Next(5, 50), random.Next(5, 50)));
-        
-        foreach (var r1 in rectangles)
+        layouter.PutRectangles(50, () => 
+            new Size(Random.Shared.Next(5, 50), Random.Shared.Next(5, 50)));
+
+        var rects = layouter.Rectangles;
+
+        for (var i = 0; i < rects.Count; i++)
         {
-            foreach (var r2 in rectangles)
+            for (var j = i + 1; j < rects.Count; j++)
             {
-                if (r1 == r2) continue;
+                var r1 = rects[i];
+                var r2 = rects[j];
                 r1.IntersectsWith(r2).Should().BeFalse();
             }
         }
@@ -73,31 +96,25 @@ public class CircularCloudLayouterTests
     [Test]
     public void PutNextRectangle_MultipleRectangles_ShouldBeCircular()
     {
-        var random = new Random();
-        var rectangles = layouter.GenerateRectangles(50, () => 
-            new Size(random.Next(5, 50), random.Next(5, 50)));
-        
-        var top = rectangles.Min(r => r.Top);
-        var bottom = rectangles.Max(r => r.Bottom);
-        var left = rectangles.Min(r => r.Left);
-        var right = rectangles.Max(r => r.Right);
-        
-        var width = right - left;
-        var height = bottom - top;
-        
-        double ratio = (double)width / height;
-        
-        ratio.Should().BeInRange(0.5, 2.0);
+        layouter.PutRectangles(150, () => 
+            new Size(Random.Shared.Next(5, 50), Random.Shared.Next(5, 50)));
+            
+        var rectsList = layouter.Rectangles.ToList();
+
+        var totalArea = rectsList.GetTotalArea();
+        var expectedRadius = Math.Sqrt(totalArea / Math.PI);
+        var realRadius = rectsList.GetCloudRadius(center);
+
+        (realRadius / expectedRadius).Should().BeLessThan(1.35);
     }
 
     [Test]
     public void Layout_MultipleRectangles_ShouldBePlacedTightly()
     {
-        var random = new Random(12345);
-        var rectangles = layouter.GenerateRectangles(50, () => 
-            new Size(random.Next(5, 50), random.Next(5, 50)));
-
-        var density = rectangles.GetDensity(center);
+        layouter.PutRectangles(50, () => 
+            new Size(Random.Shared.Next(5, 50), Random.Shared.Next(5, 50)));
+        
+        var density = layouter.Rectangles.ToList().GetDensity(center);
 
         density.Should().BeGreaterThan(0.5);
     }
