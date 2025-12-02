@@ -25,21 +25,21 @@ public class CircularCloudLayouterTests
     public void TearDown()
     {
         if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
-        {
-            var testName = TestContext.CurrentContext.Test.Name;
-            var projectPath = TestContext.CurrentContext.TestDirectory;
-            var filename = Path.Combine(projectPath, $"{testName}_Failed.png");
+            SaveFailedTestImage();
+    }
+    
+    private void SaveFailedTestImage()
+    {
+        var testName = TestContext.CurrentContext.Test.Name;
+        var projectPath = TestContext.CurrentContext.TestDirectory;
+        var filename = Path.Combine(projectPath, $"{testName}_Failed.png");
 
-            var visualizer = new TagsCloudDrawer(
-                backgroundColor: Color.White, 
-                fillingColor: Color.Red,
-                outlineColor: Color.DarkRed
-            );
-
-            visualizer.Draw(layouter.Rectangles.ToList(), filename);
-            
-            TestContext.Out.WriteLine($"Tag cloud visualization saved to file {filename}");
-        }
+        var visualizer = new TagsCloudDrawer(Color.White, Color.Red, Color.DarkRed);
+        
+        using var bitmap = visualizer.Draw(layouter.Rectangles);
+        bitmap.Save(filename);
+        
+        TestContext.Out.WriteLine($"Tag cloud visualization saved to file {filename}");
     }
     
     [Test]
@@ -99,7 +99,7 @@ public class CircularCloudLayouterTests
         layouter.PutRectangles(150, () => 
             new Size(Random.Shared.Next(5, 50), Random.Shared.Next(5, 50)));
             
-        var rectsList = layouter.Rectangles.ToList();
+        var rectsList = layouter.Rectangles;
 
         var totalArea = rectsList.GetTotalArea();
         var expectedRadius = Math.Sqrt(totalArea / Math.PI);
@@ -114,7 +114,7 @@ public class CircularCloudLayouterTests
         layouter.PutRectangles(50, () => 
             new Size(Random.Shared.Next(5, 50), Random.Shared.Next(5, 50)));
         
-        var density = layouter.Rectangles.ToList().GetDensity(center);
+        var density = layouter.Rectangles.GetDensity(center);
 
         density.Should().BeGreaterThan(0.5);
     }

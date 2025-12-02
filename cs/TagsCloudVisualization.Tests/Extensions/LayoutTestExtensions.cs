@@ -4,12 +4,12 @@ namespace TagsCloudVisualization.Tests;
 
 public static class LayoutTestExtensions
 {
-    public static double GetTotalArea(this List<Rectangle> rectangles)
+    public static double GetTotalArea(this IEnumerable<Rectangle> rectangles)
     {
         return rectangles.Sum(r => r.Width * r.Height);
     }
 
-    public static double GetCloudRadius(this List<Rectangle> rectangles, Point center)
+    public static double GetCloudRadius(this IReadOnlyCollection<Rectangle> rectangles, Point center)
     {
         if (rectangles.Count == 0) return 0;
 
@@ -21,7 +21,7 @@ public static class LayoutTestExtensions
         });
     }
 
-    public static double GetDensity(this List<Rectangle> rectangles, Point center)
+    public static double GetDensity(this IReadOnlyCollection<Rectangle> rectangles, Point center)
     {
         var rectanglesArea = rectangles.GetTotalArea();
         var radius = rectangles.GetCloudRadius(center);

@@ -9,11 +9,12 @@ class Program
     
     static void Main(string[] args)
     {
-        GenerateElongatedRectangles();
-        GenerateSmallRectangles();
-        GenerateDifferentRectangles();
+        GenerateAndSaveElongatedRectangles();
+        GenerateAndSaveSmallRectangles();
+        GenerateAndSaveDifferentRectangles();
     }
-    private static void GenerateElongatedRectangles()
+    
+    private static void GenerateAndSaveElongatedRectangles()
     {
         var layouter = new CircularCloudLayouter(Center);
         
@@ -21,10 +22,13 @@ class Program
             new Size(Random.Shared.Next(50, 150), Random.Shared.Next(20, 40)));
 
         var visualizer = new TagsCloudDrawer();
-        visualizer.Draw(rects, "sample1_with_elongated_rects.png");
+        
+        using var bitmap = visualizer.Draw(rects);
+        
+        bitmap.Save("sample1_with_elongated_rects.png");
     }
 
-    private static void GenerateSmallRectangles()
+    private static void GenerateAndSaveSmallRectangles()
     {
         var layouter = new CircularCloudLayouter(Center);
         
@@ -36,10 +40,12 @@ class Program
             fillingColor: Color.DarkGreen,
             outlineColor: Color.LimeGreen
         );
-        visualizer.Draw(rects, "sample2_with_small_rects.png");
+        
+        using var bitmap = visualizer.Draw(rects);
+        bitmap.Save("sample2_with_small_rects.png");
     }
 
-    private static void GenerateDifferentRectangles()
+    private static void GenerateAndSaveDifferentRectangles()
     {
         var layouter = new CircularCloudLayouter(Center);
         var rects = new List<Rectangle>();
@@ -55,6 +61,8 @@ class Program
             fillingColor: Color.Orange,
             outlineColor: Color.DarkRed
         );
-        visualizer.Draw(rects, "sample3_with_different_rects.png");
+        
+        using var bitmap = visualizer.Draw(rects);
+        bitmap.Save("sample3_with_different_rects.png");
     }
 }

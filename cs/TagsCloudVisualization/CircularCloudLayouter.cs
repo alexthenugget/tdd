@@ -8,7 +8,6 @@ public class CircularCloudLayouter
     private readonly List<Rectangle> rectangles; 
     public IReadOnlyList<Rectangle> Rectangles => rectangles;
     
-    private double angle;
     private const double SpiralStep = 0.5;
     private const double AngleStep = 0.1;
     
@@ -37,6 +36,7 @@ public class CircularCloudLayouter
 
     private IEnumerable<Point> GetSpiralPoints()
     {
+        var angle = 0.0;
         while (true)
         {
             var radius = SpiralStep * angle;
@@ -99,6 +99,6 @@ public class CircularCloudLayouter
     
     private static Point GetRectangleCenter(Rectangle rect)
     {
-        return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
+        return rect.Location + rect.Size / 2;
     }
 }
