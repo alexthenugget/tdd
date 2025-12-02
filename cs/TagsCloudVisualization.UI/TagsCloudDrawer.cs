@@ -17,23 +17,11 @@ public class TagsCloudDrawer
         this.outlineColor = outlineColor ?? Color.CornflowerBlue;
     }
 
-    public Bitmap Draw(IEnumerable<Rectangle> rectangles)
+    public Bitmap Draw(IReadOnlyCollection<Rectangle> rectangles)
     {
-        var rectsList = rectangles.ToList();
-        if (rectsList.Count == 0)
-        {
-            var emptySize = new Size(150, 150); 
-        
-            var emptyBitmap = new Bitmap(emptySize.Width, emptySize.Height);
-            
-            using var emptyGraphics = Graphics.FromImage(emptyBitmap);
-        
-            emptyGraphics.Clear(backgroundColor);
-        
-            return emptyBitmap;
-        }
-        
-        var cloudBounds = rectsList.GetBounds();
+        var cloudBounds = rectangles.Count > 0 
+            ? rectangles.GetBounds() 
+            : new Rectangle(0, 0, 50, 50);
         
         var width = cloudBounds.Width + 2 * Indentation;
         var height = cloudBounds.Height + 2 * Indentation;
@@ -45,7 +33,7 @@ public class TagsCloudDrawer
         
         graphics.Clear(backgroundColor);
         
-        foreach (var rect in rectsList)
+        foreach (var rect in rectangles)
         {
             var drawRectangle = new Rectangle(
                 rect.X - cloudBounds.X + Indentation,
